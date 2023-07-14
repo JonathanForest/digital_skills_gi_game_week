@@ -1,55 +1,80 @@
-import turtle as tt
-
-sc = tt.Screen()
-sc.setup(width=1000, height=400)
-
-player_one = tt.Turtle()
-player_one.setx(-400)
-player_one.sety(100)
-player_one.shape("turtle")
-
-player_two = tt.Turtle()
-player_two.setx(-400)
-player_two.sety(-100)
-player_two.shape("turtle")
-
-# Displays the score
-sketch = tt.Turtle()
-sketch.speed(0)
-sketch.color("blue")
-sketch.penup()
-sketch.hideturtle()
-sketch.goto(0, 150)
-sketch.write("Left_player : 0    Right_player: 0",
-             align="center", font=("Courier", 24, "normal"))
-
-def update_details():
-    p1 = player_one.xcor()
-    p2 = player_two.xcor()
-    sketch.clear()
-    sketch.write("Left_player : {}    Right_player: {}".format(p1, p2),
-             align="center", font=("Courier", 24, "normal"))
+import turtle
+import random
+import string
 
 
-def show_winner_screen():
-    ...
+player_one_colour = input("Player 1: Choose a colour: ")
+if player_one_colour == "":
+    colour = '#'
+    for i in range(6):
+        colour = colour + random.choice(string.hexdigits)
+        print(colour)
+    player_one_colour = colour
+
+player_two_colour = input("Player 2: Choose a colour: ")
+if player_two_colour == "":
+    colour = '#'
+    for i in range(6):
+        colour = colour + random.choice(string.hexdigits)
+    player_two_colour = colour
 
 
-def move1():
-    player_one.setx(player_one.xcor() + 10)
-    update_details()
-    if player_one.xcor() >= 400:
-        sc.bye()
-        print("player one won!")
-def move2():
-    player_two.setx(player_two.xcor() + 10)
-    update_details()
-    if player_two.xcor() >= 400:
-        print("player two won!")
-        sc.bye()
+screen = turtle.Screen()
 
-sc.listen()
-sc.onkeypress(move1, "a")
-sc.onkeypress(move2, "n")
+screen.setup(height=400, width=1000)
 
-sc.mainloop()
+def create_turtle(x, y, colour):
+    new_turtle = turtle.Turtle()
+    new_turtle.penup()
+    new_turtle.color(colour)
+    new_turtle.shape("turtle")
+    new_turtle.setx(x)
+    new_turtle.sety(y)
+    return new_turtle
+
+player_one = create_turtle(-400, 100, player_one_colour)
+
+player_two = create_turtle(-400, -100, player_two_colour)
+
+def create_banner(x, y, colour):
+    message = turtle.Turtle()
+    message.color(colour)
+    message.penup()
+    message.hideturtle()
+    message.goto(x, y)
+    return message
+
+header = create_banner(0, 150, "red")
+header.write("Tuuuuuurtle Raaaaacer!",
+             font=("Courier", 24, "normal"),
+             align="center")
+
+def have_they_won(player, player_name):
+    x_coordinate = player.xcor()
+    if x_coordinate >= 400:
+        header.clear()
+        header.write(player_name + " Won! Well Done!",
+                font=("Courier", 24, "normal"),
+                align="center")
+
+def move_player_one():
+    current_x = player_one.xcor()
+    player_one.setx(current_x + 20)
+    have_they_won(player_one, "Player 1")
+
+def move_player_two():
+    current_x = player_two.xcor()
+    player_two.setx(current_x + 20)
+    have_they_won(player_two, "Player 2")
+
+
+screen.listen()
+screen.onkeypress(move_player_one, "a")
+screen.onkeypress(move_player_two, "n")
+
+
+
+
+
+
+screen.mainloop()
